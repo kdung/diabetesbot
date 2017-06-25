@@ -1,0 +1,23 @@
+{
+  "currentIntent": {
+    "slots": {
+      "gender": "female",
+      "pregnant": "None",
+      "age": "None",
+      "ogtt": "None",
+      "fpg": "None"
+    },
+    "name": "DiagnoseDiabetes",
+    "confirmationStatus": "None"
+  },
+  "bot": {
+    "alias": "$LATEST",
+    "version": "$LATEST",
+    "name": "DiagnoseDiabetes"
+  },
+  "userId": "John",
+  "invocationSource": "DialogCodeHook",
+  "outputDialogMode": "Text",
+  "messageVersion": "1.0",
+  "sessionAttributes": {}
+}

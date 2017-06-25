@@ -1,0 +1,6 @@
+{
+  "name": "diabetes",
+  "description": "Python example project",
+  "runtime": "python3.6",
+  "role": "arn:aws:iam::739451433545:role/service-role/diabetesbot"
+}

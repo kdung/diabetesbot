@@ -1,0 +1,38 @@
+{
+  "currentIntent": {
+    "slots": {
+      "bloodPressure": "yes",
+      "familyHistory": "yes",
+      "triglycerides": "high",
+      "gestationalHistory": "no",
+      "exercise": "no",
+      "glucoseTolerance": "yes",
+      "pos":"yes",
+      "headache":"yes",
+      "blur":"yes",
+      "excessiveUrination":"yes",
+      "polydipsia":"yes",
+      "lostConsciousness":"yes",
+      "nausea":"yes",
+      "polyphagia":"yes",
+      "tiredness":"yes",
+      "loseWeight":"yes",
+      "fraction":"yes",
+      "infection":"yes",
+      "lostSensation":"yes",
+      "coldSweat":"yes"
+    },
+    "name": "DiagnoseDiabetes",
+    "confirmationStatus": "None"
+  },
+  "bot": {
+    "alias": "$LATEST",
+    "version": "$LATEST",
+    "name": "DiagnoseDiabetes"
+  },
+  "userId": "John",
+  "invocationSource": "DialogCodeHook",
+  "outputDialogMode": "Text",
+  "messageVersion": "1.0",
+  "sessionAttributes": {}
+}
