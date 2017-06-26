@@ -47,8 +47,221 @@ def diagnose_diabetes(intent_request):
                                    'pregnant',
                                    {
                                        'contentType': 'PlainText',
-                                       'content':'Are you pregnant? (yes/no)'
-                                   })
+                                       'content':'Are you pregnant?'
+                                   },
+                                   {
+                                      'version': 1,
+                                      'contentType':'application/vnd.amazonaws.card.generic',
+                                      'genericAttachments': [
+                                          {
+                                             'title': 'Are you pregnant?',
+                                             'subTitle':'this information will help me diagnose if you have gestational diabetes',
+                                             'imageUrl':None,
+                                             'attachmentLinkUrl':None,
+                                             'buttons':[ 
+                                                 {  
+                                                    'text':'no',
+                                                    'value':'no'
+                                                 },
+                                                 {
+                                                    'text':'yes',
+                                                    'value':'yes'
+                                                 }
+                                              ]
+                                           } 
+                                       ] 
+                                    }
+                                )
+        if gender is not None and slots['pregnant'] is not None and slots['age'] is not None:
+            is_pregnant = slots['pregnant'] == 'yes'
+            if is_empty_slot('ogtt', slots):
+                ogtt_subtitle = None
+                if is_pregnant:
+                    ogtt_subtitle = 'Reference ranges: healthy (<= 7.7mmol/L), unhealthy (>7.7mmol/L)'
+                else:
+                    ogtt_subtitle = 'Reference ranges: healthy (< 11.1mmol/L), unhealthy (>=11.1mmol/L)'
+                return elicit_slot(session_attributes,
+                                       intent_name,
+                                       slots,
+                                       'ogtt',
+                                       {
+                                           'contentType': 'PlainText',
+                                           'content':'Is your blood glucose level (mmol/L) shown in 2-hours post Oral Glucose Tolerance test (OGTT) in healthy range?'
+                                       },
+                                       {
+                                          'version': 1,
+                                          'contentType':'application/vnd.amazonaws.card.generic',
+                                          'genericAttachments': [
+                                              {
+                                                 'title': 'Your Oral Glucose Tolerance test status:',
+                                                 'subTitle':ogtt_subtitle,
+                                                 'imageUrl':None,
+                                                 'attachmentLinkUrl':None,
+                                                 'buttons':[ 
+                                                     {
+                                                        'text':'healthy',
+                                                        'value':'healthy'
+                                                     },
+                                                     {
+                                                        'text':'unhealthy',
+                                                        'value':'unhealthy'
+                                                     },
+                                                     {
+                                                        'text':'I don\'t know',
+                                                        'value':'not available'
+                                                     }
+                                                  ]
+                                               } 
+                                           ] 
+                                        }
+                                    )
+            
+            if not is_pregnant:
+                if is_empty_slot('fpg', slots):
+                    return elicit_slot(session_attributes,
+                                       intent_name,
+                                       slots,
+                                       'fpg',
+                                       {
+                                           'contentType': 'PlainText',
+                                           'content':'Is your blood glucose level (mmol/L) shown in Fasting Plasma Glucose test (FPG) in healthy range?'
+                                       },
+                                       {
+                                          'version': 1,
+                                          'contentType':'application/vnd.amazonaws.card.generic',
+                                          'genericAttachments': [
+                                              {
+                                                 'title': 'Your Fasting Plasma Glucose test (FPG) test status:',
+                                                 'subTitle':'Reference ranges (mmol/L): healthy (< 6.1), at risk (6.1-6.9), unhealthy (>7.0)',
+                                                 'imageUrl':None,
+                                                 'attachmentLinkUrl':None,
+                                                 'buttons':[ 
+                                                     {
+                                                        'text':'healthy',
+                                                        'value':'healthy'
+                                                     },
+                                                     {
+                                                        'text':'at risk',
+                                                        'value':'at risk'
+                                                     },
+                                                     {
+                                                        'text':'unhealthy',
+                                                        'value':'unhealthy'
+                                                     },
+                                                     {
+                                                        'text':'I don\'t know',
+                                                        'value':'not available'
+                                                     }
+                                                  ]
+                                               } 
+                                           ] 
+                                        }
+                                    )
+                if is_empty_slot('cpg', slots):
+                    return elicit_slot(session_attributes,
+                                       intent_name,
+                                       slots,
+                                       'cpg',
+                                       {
+                                           'contentType': 'PlainText',
+                                           'content':'How much is your blood glucose level (mmol/L) shown in Casual Plasma Glucose test (CPG)?'
+                                       },
+                                       {
+                                          'version': 1,
+                                          'contentType':'application/vnd.amazonaws.card.generic',
+                                          'genericAttachments': [
+                                              {
+                                                 'title': 'Your Casual Plasma Glucose test (CPG) status:',
+                                                 'subTitle':'Reference ranges: healthy (< 11.1mmol/L), unhealthy (>=11.1mmol/L)',
+                                                 'imageUrl':None,
+                                                 'attachmentLinkUrl':None,
+                                                 'buttons':[ 
+                                                     {
+                                                        'text':'healthy',
+                                                        'value':'healthy'
+                                                     },
+                                                     {
+                                                        'text':'unhealthy',
+                                                        'value':'unhealthy'
+                                                     },
+                                                     {
+                                                        'text':'I don\'t know',
+                                                        'value':'not available'
+                                                     }
+                                                  ]
+                                               } 
+                                           ] 
+                                        }
+                                    )
+                if is_empty_slot('bmi', slots):
+                    return elicit_slot(session_attributes,
+                                       intent_name,
+                                       slots,
+                                       'bmi',
+                                       {
+                                           'contentType': 'PlainText',
+                                           'content':'How is your Body Mass Index (BMI)?'
+                                       },
+                                       {
+                                          'version': 1,
+                                          'contentType':'application/vnd.amazonaws.card.generic',
+                                          'genericAttachments': [
+                                              {
+                                                 'title': 'Your Body Mass Index (BMI) indicates:',
+                                                 'subTitle':'Reference ranges: obesity (>30), overweight (from 25 to 29.9), normal (< 25)',
+                                                 'imageUrl':None,
+                                                 'attachmentLinkUrl':None,
+                                                 'buttons':[ 
+                                                     {
+                                                        'text':'obesity',
+                                                        'value':'obesity'
+                                                     },
+                                                     {
+                                                        'text':'overweight',
+                                                        'value':'overweight'
+                                                     },
+                                                     {
+                                                        'text':'normal',
+                                                        'value':'normal'
+                                                     }
+                                                  ]
+                                               } 
+                                           ] 
+                                        }
+                                    )
+            elif is_empty_slot('gestationalHistory', slots):
+                return elicit_slot(session_attributes,
+                                       intent_name,
+                                       slots,
+                                       'gestationalHistory',
+                                       {
+                                           'contentType': 'PlainText',
+                                           'content':'Do you have history of gestational diabetes or having baby with over 4kg (yes/no)?'
+                                       },
+                                       {
+                                          'version': 1,
+                                          'contentType':'application/vnd.amazonaws.card.generic',
+                                          'genericAttachments': [
+                                              {
+                                                 'title':'Do you have history of gestational diabetes or having baby with over 4kg?',
+                                                 'subTitle':'this information will help me diagnose if you have gestational diabetes',
+                                                 'imageUrl':None,
+                                                 'attachmentLinkUrl':None,
+                                                 'buttons':[ 
+                                                     {
+                                                        'text':'yes',
+                                                        'value':'yes'
+                                                     },
+                                                     {
+                                                        'text':'no',
+                                                        'value':'no'
+                                                     }
+                                                  ]
+                                               } 
+                                           ] 
+                                        }
+                                    )
+            
         return delegate(session_attributes, intent_request['currentIntent']['slots'])
     
     return close(intent_request['sessionAttributes'],
@@ -72,6 +285,8 @@ def validate_pregnant(is_pregnant):
         return build_validation_result(False, 'pregnant', 'I did not understand that, are you pregnant (yes/no)?')
     return build_validation_result(True, None, None)
 
+def is_empty_slot(slot_name, slots):
+    return slots[slot_name] is None
 
 
 """ --- utilities functions --- """
@@ -88,7 +303,7 @@ def build_validation_result(is_valid, violated_slot, message_content):
         'message': {'contentType': 'PlainText', 'content': message_content}
     }
     
-def elicit_slot(session_attributes, intent_name, slots, slot_to_elicit, message):
+def elicit_slot(session_attributes, intent_name, slots, slot_to_elicit, message, response_card):
     return {
         'sessionAttributes': session_attributes,
         'dialogAction': {
@@ -96,7 +311,8 @@ def elicit_slot(session_attributes, intent_name, slots, slot_to_elicit, message)
             'intentName': intent_name,
             'slots': slots,
             'slotToElicit': slot_to_elicit,
-            'message': message
+            'message': message,
+            'responseCard': response_card
         }
     }
     

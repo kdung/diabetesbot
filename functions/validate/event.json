@@ -5,7 +5,10 @@
       "pregnant": "None",
       "age": "None",
       "ogtt": "None",
-      "fpg": "None"
+      "fpg": "None",
+      "cpg": "None",
+      "gestationalHistory":"None",
+      "bmi": "None"
     },
     "name": "DiagnoseDiabetes",
     "confirmationStatus": "None"

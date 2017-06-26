@@ -16,10 +16,9 @@ print('Loading function')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-cfmap = {'bloodPressure': {'yes':0.2,'no':-0.2,'na':0},
+common_cf_dict = {'bloodPressure': {'yes':0.2,'no':-0.2,'na':0},
          'familyHistory': {'yes':0.2,'no':-0.2},
          'triglycerides': {'normal':-0.4,'borderline':0.4,'high':0.5},
-         'gestationalHistory': {'yes':0.6,'no':-0.6},
          'exercise': {'yes':0.4,'no':-0.4},
          'glucoseTolerance': {'yes':0.4,'no':-0.4,'na':0},
          'pos': {'yes':0.4,'no':-0.4,'na':0},
@@ -35,28 +34,67 @@ cfmap = {'bloodPressure': {'yes':0.2,'no':-0.2,'na':0},
          'fraction': {'yes':0.2,'no':-0.2},
          'infection': {'yes':0.4,'no':-0.4},
          'lostSensation': {'yes':0.2,'no':-0.2},
-         'coldSweat': {'yes':0.2,'no':-0.2}
+         'coldSweat': {'yes':0.2,'no':-0.2},
+         'ogtt':{'unhealthy':0.8,'healthy':-0.8},
+         'fpg':{'unhealthy':0.8,'healthy':-0.8,'at risk':0.2},
+         'cpg':{'unhealthy':0.8,'healthy':-0.8},
+         'bmi':{'obesity':0.6,'overweight':0.5,'normal':-0.6}
          }
-
+gestational_cf_dict = {
+        'gestationalHistory': {'yes':0.6,'no':-0.6}
+        }
 
 def diagnose_diabetes(intent_request):
     slots = intent_request['currentIntent']['slots']
+    age = int(slots['age'])
+    is_pregnant = slots['pregnant'] == 'yes'
     derived_cf = [0]
     for slot in slots:
         value = slots[slot]
         print(slot, value)
-        if slot in cfmap and value in cfmap[slot]:
-            derived_cf.append(cfmap[slot][value])
+        if slot in common_cf_dict and value in common_cf_dict[slot]:
+            derived_cf.append(common_cf_dict[slot][value])
+        if is_pregnant and slot in gestational_cf_dict and value in gestational_cf_dict[slot]:
+            derived_cf.append(gestational_cf_dict[slot][value])
         
     print(derived_cf)
-    result = reduce(combine_cf, derived_cf)
+    raw_cf = reduce(combine_cf, derived_cf)
+    result = (raw_cf + 1)/2 * 100
+    print(raw_cf)
     print(result)
+    
+    diabetes_type = None
+    if is_pregnant: 
+        diabetes_type = 'gestational diabetes'
+    elif age < 20:
+        diabetes_type = 'diabetes type I'
+    else:
+        diabetes_type = 'diabetes type II'
+
+    store_result(slots, result, diabetes_type)
+
     return close(intent_request['sessionAttributes'],
                 'Fulfilled',
                 {
                     'contentType': 'PlainText',
-                    'content': 'Thank you, good bye.'
+                    'content': 'You might have chance to have ' + diabetes_type + ' with probability of ' + str(round(result, 2)) + '%.'
                 })
+
+def store_result(slots, result, diabetes_type):
+    import boto3
+    import uuid
+    import dynamo_utils
+    dynamo = boto3.client('dynamodb')
+    dynamo.put_item(
+        TableName='diabetes_logs',
+        Item=dynamo_utils.convert_json_to_dynamo({
+            'uuid': str(uuid.uuid4()),
+            'slots': slots,
+            'result': {
+                'probability': result,
+                'type': diabetes_type
+            }
+        }))
 
 def combine_cf(cf1, cf2):
     if cf1 >= 0 and cf2 >= 0:
