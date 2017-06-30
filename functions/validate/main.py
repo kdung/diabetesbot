@@ -54,7 +54,7 @@ def diagnose_diabetes(intent_request):
                                       'contentType':'application/vnd.amazonaws.card.generic',
                                       'genericAttachments': [
                                           {
-                                             'title': 'Are you pregnant?',
+                                             'title': 'Please choose an answer:',
                                              'subTitle':'this information will help me diagnose if you have gestational diabetes',
                                              'imageUrl':None,
                                              'attachmentLinkUrl':None,
@@ -86,7 +86,7 @@ def diagnose_diabetes(intent_request):
                                        'ogtt',
                                        {
                                            'contentType': 'PlainText',
-                                           'content':'Is your blood glucose level (mmol/L) shown in 2-hours post Oral Glucose Tolerance test (OGTT) in healthy range?'
+                                           'content':'Is your blood glucose level shown in 2-hours post Oral Glucose Tolerance test (OGTT) in healthy range?'
                                        },
                                        {
                                           'version': 1,
@@ -164,7 +164,7 @@ def diagnose_diabetes(intent_request):
                                        'cpg',
                                        {
                                            'contentType': 'PlainText',
-                                           'content':'How much is your blood glucose level (mmol/L) shown in Casual Plasma Glucose test (CPG)?'
+                                           'content':'How is your blood glucose level shown in Casual Plasma Glucose test (CPG)?'
                                        },
                                        {
                                           'version': 1,
@@ -229,38 +229,75 @@ def diagnose_diabetes(intent_request):
                                            ] 
                                         }
                                     )
-            elif is_empty_slot('gestationalHistory', slots):
-                return elicit_slot(session_attributes,
-                                       intent_name,
-                                       slots,
-                                       'gestationalHistory',
-                                       {
-                                           'contentType': 'PlainText',
-                                           'content':'Do you have history of gestational diabetes or having baby with over 4kg (yes/no)?'
-                                       },
-                                       {
-                                          'version': 1,
-                                          'contentType':'application/vnd.amazonaws.card.generic',
-                                          'genericAttachments': [
-                                              {
-                                                 'title':'Do you have history of gestational diabetes or having baby with over 4kg?',
-                                                 'subTitle':'this information will help me diagnose if you have gestational diabetes',
-                                                 'imageUrl':None,
-                                                 'attachmentLinkUrl':None,
-                                                 'buttons':[ 
-                                                     {
-                                                        'text':'yes',
-                                                        'value':'yes'
-                                                     },
-                                                     {
-                                                        'text':'no',
-                                                        'value':'no'
-                                                     }
-                                                  ]
-                                               } 
-                                           ] 
-                                        }
-                                    )
+            elif is_pregnant:
+                if is_empty_slot('gestationalHistory', slots):
+                    return elicit_slot(session_attributes,
+                                           intent_name,
+                                           slots,
+                                           'gestationalHistory',
+                                           {
+                                               'contentType': 'PlainText',
+                                               'content':'Do you have history of gestational diabetes or having baby with over 4kg (yes/no)?'
+                                           },
+                                           {
+                                              'version': 1,
+                                              'contentType':'application/vnd.amazonaws.card.generic',
+                                              'genericAttachments': [
+                                                  {
+                                                     'title':'Please choose an answer:',
+                                                     'subTitle':'',
+                                                     'imageUrl':None,
+                                                     'attachmentLinkUrl':None,
+                                                     'buttons':[ 
+                                                         {
+                                                            'text':'yes',
+                                                            'value':'yes'
+                                                         },
+                                                         {
+                                                            'text':'no',
+                                                            'value':'no'
+                                                         }
+                                                      ]
+                                                   } 
+                                               ] 
+                                            }
+                                        )
+                if is_empty_slot('pos', slots):
+                    return elicit_slot(session_attributes,
+                                           intent_name,
+                                           slots,
+                                           'gestationalHistory',
+                                           {
+                                               'contentType': 'PlainText',
+                                               'content':'Do you have Polycystic Ovarian Syndrome?'
+                                           },
+                                           {
+                                              'version': 1,
+                                              'contentType':'application/vnd.amazonaws.card.generic',
+                                              'genericAttachments': [
+                                                  {
+                                                     'title':'Please choose an answer:',
+                                                     'subTitle':'it means your hormones are usually out of balance, especially during periods.',
+                                                     'imageUrl':None,
+                                                     'attachmentLinkUrl':None,
+                                                     'buttons':[ 
+                                                         {
+                                                            'text':'yes',
+                                                            'value':'yes'
+                                                         },
+                                                         {
+                                                            'text':'no',
+                                                            'value':'no'
+                                                         },
+                                                         {
+                                                            'text':'I don\'t know',
+                                                            'value':'na'
+                                                         }
+                                                      ]
+                                                   } 
+                                               ] 
+                                            }
+                                        )
             
         return delegate(session_attributes, intent_request['currentIntent']['slots'])
     
@@ -350,7 +387,7 @@ def dispatch(intent_request):
     intent_name = intent_request['currentIntent']['name']
 
     # Dispatch to your bot's intent handlers
-    if intent_name == 'DiagnoseDiabetes':
+    if intent_name == 'DiagnoseDiabetes' or intent_name == 'DiabetesDiagnose':
         return diagnose_diabetes(intent_request)
 
     raise Exception('Intent with name ' + intent_name + ' not supported')

@@ -77,7 +77,10 @@ def diagnose_diabetes(intent_request):
                 'Fulfilled',
                 {
                     'contentType': 'PlainText',
-                    'content': 'You might have chance to have ' + diabetes_type + ' with probability of ' + str(round(result, 2)) + '%.'
+                    'content': 'You might have chance to have ' + diabetes_type + ' with probability of ' 
+                    + str(round(result, 2)) 
+                    + '%. The result that I came up with is just for references. You should seek medication from specialist to be sure of your health status.'
+                    + 'Thank you for talking to me. Wish you good health and have a nice day!'
                 })
 
 def store_result(slots, result, diabetes_type):
@@ -143,7 +146,7 @@ def dispatch(intent_request):
     intent_name = intent_request['currentIntent']['name']
 
     # Dispatch to your bot's intent handlers
-    if intent_name == 'DiagnoseDiabetes':
+    if intent_name == 'DiagnoseDiabetes' or intent_name == 'DiabetesDiagnose':
         return diagnose_diabetes(intent_request)
 
     raise Exception('Intent with name ' + intent_name + ' not supported')
